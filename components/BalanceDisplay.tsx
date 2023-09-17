@@ -10,6 +10,15 @@ export const BalanceDisplay: FC = () => {
     useEffect(() => {
         if (!connection || !publicKey) { return }
 
+        // Ensure the balance updates after the transaction completes
+        connection.onAccountChange(
+            publicKey, 
+            (updatedAccountInfo) => {
+                setBalance(updatedAccountInfo.lamports / LAMPORTS_PER_SOL)
+            }, 
+            'confirmed'
+        )
+
         connection.getAccountInfo(publicKey).then(info => {
             setBalance(info.lamports);
         })
